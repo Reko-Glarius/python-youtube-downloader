@@ -1,35 +1,52 @@
-from pytube import YouTube, Playlist #Importacion de elementos de la libreria pytube y pytube3
+try:
+    from pytube import YouTube, Playlist
+    
+except:
+    print("Error: Librerias del sistem no se encuentran instaladas")
+    exit()
 
-opcion=int(input("1)Crear y Descargar\n2)Descargar Directamente\nOpcion:")) #Captura eleccion tomada
+opcion=int(input("1)Crear y Descargar\n2)Descargar Directamente\nOpcion:"))
+if(opcion==1):
+    w=0
+    while(w==0):
+        pl=input("Ingrese Url playlist completa:")
+        try:
+            playlist = Playlist(pl)
+            w=1
 
-if(opcion==1): #Opcion 1, crea un archivo .txt con todas las url de todos los videos de la playlist
-    pl=input("Ingrese Url playlist completa:")
-    playlist = Playlist(pl)
+        except:
+            print("Url ingresada de manera incorrecta, por favor vuelva a intentarlo")
+            w=0
+        
     print('Number of videos in playlist: %s' % len(playlist.video_urls))
 
     urls=[]
-    for url in playlist.video_urls: #For para almacenar las url, para luego almacenar en el .txt
-        urls.append((url+"\n")) #Se añade un \n al final para mayor orden y control
+    for url in playlist.video_urls:
+        urls.append((url+"\n"))
 
-    lista=open("video-list.txt", "w") #Apertura de archivo .txt
-    lista.writelines(urls) #Almacenamiento en el .txt
-    lista.close() #Cerrado y guardado de datos en .txt
+    lista=open("video-list.txt", "w+")
+    lista.writelines(urls)
+    lista.close()
 
-    opcion=2 #Permite pasar inmediatamente a el apartado 2, descargar videos
+    opcion=2
     
-if(opcion==2): #Opcion 2, en funcion de todas las urls de todos los videos de la playlist, va descargando cada video
+if(opcion==2):
     videos=[]
     cant=0
 
-    lista=open("video-list.txt", "r") #Apertura de archivo .txt para obtencion de urls
-    lines=lista.readlines() #Almacenamiento de urls
-    for linea in lines: #Ciclo para almacenar todas las urls en el sistema
-        cant+=1 #registra cantidad total de videos
+    lista=open("video-list.txt", "r")
+    lines=lista.readlines()
+    j=len(lines)
+    for linea in lines:
+        cant+=1
         videos.append(linea)
-        
-    lista.close() #Cerrado de archivo de .txt
-    
-    for url in videos: #Ciclo para descargar videos url por url
-        YouTube(url).streams.first().download() #Funcion para descargar video
-        cant-=1
-        print("Cantidad de videos restantes: ", cant) #Imprime por consola cuantos videos restan
+    lista.close()
+    for url in videos:
+        try:
+            YouTube(url).streams.first().download()
+            cant-=1
+            print("Cantidad de videos restantes: ", cant)
+
+        except:
+            print("El programa a fallado, por favor reinicie la aplicacion")
+                
