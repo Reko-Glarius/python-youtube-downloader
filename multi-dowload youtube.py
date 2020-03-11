@@ -49,4 +49,10 @@ if(opcion==2):
 
         except:
             print("El programa a fallado, por favor reinicie la aplicacion")
+            for i in range(cant, len(videos)):
+                vs.append(((videos[i])+"\n"))
+
+            lista=open("video-list.txt", "w")
+            lista.writelines(urls)
+            lista.close()
                 
