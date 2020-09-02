@@ -1,6 +1,7 @@
 try:
     from pytube import YouTube, Playlist
     from os import mkdir, getcwd
+    from re import compile
 
 except:
     print("Error: Librerias del sistem no se encuentran instaladas")
@@ -9,11 +10,11 @@ except:
 ### Funciones
 def option1():
     w=0
-
     while(w==0):
         pl=input("Ingrese Url playlist completa:")
         try:
             playlist=Playlist(pl)
+            playlist._video_regex=compile(r"\"url\":\"(/watch\?v=[\w-]*)")
             w=1
 
         except:
@@ -23,7 +24,7 @@ def option1():
 
     urls=[]
     for url in playlist.video_urls:
-        urls.append((url))
+        urls.append((url+"\n"))
 
     lista=open("video-list.txt", "w+")
     lista.writelines(urls)
@@ -49,19 +50,20 @@ def option2():
         urls=[]
         for url in videos:
             try:
-                YouTube(url).streams.first().download(ap+'/Videos')
                 cant-=1
+                YouTube(url).streams.first().download(ap+'/Videos')
                 print("Cantidad de videos restantes: ", cant)
 
             except:
-                print("--")
-                if(url=="" or (url in urls)):
-                    pass
-                else:
-                    print("El programa a fallado, por favor reinicie la aplicacion")
-                    urls.append(url)
-                    cant+=1
-        videos=urls
+
+                print("Descarga del video a fallado; registrando y procediendo al siguiente")
+                urls.append(url)
+                cant+=1
+        videos=[]
+
+    lista = open("video-list.txt", "w")
+    lista.writelines(urls)
+    lista.close()
 
 ### Main
 def main():
